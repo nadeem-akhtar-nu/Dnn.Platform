@@ -670,10 +670,13 @@ class PersonaBarPageTreeviewInteractor extends Component {
             isTreeviewExpanded
         } = this.state;
 
+        let listPageItems = undefined;
+        let updateReduxStore = null;
         this.props._traverse((item, list, updateStore) => {
             if (item.hasOwnProperty("childListItems") && item.childListItems.length > 0) {
                 item.isOpen = (isTreeviewExpanded) ? false : true;
-                updateStore(list);
+                updateReduxStore = updateStore;
+                listPageItems = list;
                 this.setState({
                     isTreeviewExpanded: !this.state.isTreeviewExpanded
                 });
@@ -681,9 +684,11 @@ class PersonaBarPageTreeviewInteractor extends Component {
                 item.childListItems = [];
                 item.isOpen = false;
                 item.hasChildren = false;
-                updateStore(list);
+                updateReduxStore = updateStore;
+                listPageItems = list;
             }
         });
+        updateReduxStore ? updateReduxStore(listPageItems) : null;
     }
 
     render_treeview() {
